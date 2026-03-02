@@ -1,0 +1,10 @@
+{
+  "name": "skillers-suda",
+  "version": "0.3.0",
+  "description": "4 persona Agent Team skill builder — spawn real agents to analyze and debate, then build working skills",
+  "author": {
+    "name": "fivetaku"
+  },
+  "license": "MIT",
+  "keywords": ["skill-builder", "interview", "workflow", "vibe-coding", "korean", "persona", "plugin-dev"]
+}
