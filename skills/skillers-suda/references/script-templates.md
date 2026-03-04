@@ -235,3 +235,21 @@ fi
 - 하드코딩된 절대 경로
 - 네트워크 없이 동작 불가한 필수 로직 (fallback 필요)
 - 표준 라이브러리 외 import (불가피하면 SKILL.md에 의존성 명시)
+
+## 크로스 플랫폼 가이드
+
+스킬 스크립트 작성 시 다음 규칙을 따르면 macOS/Linux/Windows(WSL) 모두에서 동작합니다.
+
+### 명령어 호환성
+- `which` 대신 `command -v` 사용 (POSIX 표준)
+- `~` 대신 `$HOME` 사용 (변수 확장이 더 안정적)
+- `python3` 실패 시 `python` 폴백: `python3 script.py 2>/dev/null || python script.py`
+
+### 스크립트 언어 권장
+- bash 스크립트 대신 **Node.js 스크립트 권장** (Windows 네이티브 지원)
+- bash가 필요하면 `.cmd` 대응 파일도 함께 제공
+- shebang: `#!/usr/bin/env node` (Node.js) / `#!/usr/bin/env bash` (bash)
+
+### 경로 처리
+- Node.js: `path.join()` 사용 (OS별 구분자 자동 처리)
+- bash: `"$HOME/.claude/"` 형태로 큰따옴표 사용

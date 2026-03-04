@@ -69,7 +69,7 @@ Claude가 추론으로 처리하는 단계. AI의 언어 이해 능력이 핵심
 
 Bash로 실행한다:
 \`\`\`bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/{skill-name}/scripts/{filename}.py [args]
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/{skill-name}/scripts/{filename}.py [args] 2>/dev/null || python ${CLAUDE_PLUGIN_ROOT}/skills/{skill-name}/scripts/{filename}.py [args]
 \`\`\`
 
 - 입력: {인자 설명}
