@@ -350,8 +350,15 @@ skills/{skill-name}/
 │   └── {script}.py
 ├── references/           # rag 타입 단계용
 │   └── {reference}.md
-└── assets/               # 템플릿, 설정 파일
+└── assets/               # 출력에 사용되는 파일 (컨텍스트에 로드하지 않음)
+    └── {template/image/font/etc.}
 ```
+
+**assets/ 폴더 용도:**
+- 템플릿 파일 (HTML, React 보일러플레이트 등)
+- 이미지, 아이콘, 폰트
+- 샘플 데이터, 설정 파일
+- scripts/references와 달리 **컨텍스트에 로드하지 않고** 출력물에 직접 사용
 
 필요 시 추가 생성:
 - `commands/{skill-name}.md` — 슬래시 커맨드
@@ -382,7 +389,26 @@ description: This skill should be used when the user asks to "{trigger1}", "{tri
 
 ## Scripts
 - **`scripts/{file}.py`** — {설명}
+
+## Assets
+- **`assets/{file}`** — {설명}
 ```
+
+**Writing Style 규칙 (SKILL.md 생성 시 반드시 적용):**
+
+1. **Imperative form 사용** — "To accomplish X, do Y" 형식. "You should do X" 금지.
+   - O: "Read the configuration file. Validate the input."
+   - X: "You should read the configuration file."
+2. **Description은 third-person** — "This skill should be used when..." 형식.
+   - O: `description: This skill should be used when the user asks to "번역해줘", "translate this".`
+   - X: `description: Use this skill when you want to translate.`
+3. **구체적 trigger phrase 포함** — description에 사용자가 실제로 말할 문장을 3-5개 넣는다.
+4. **Concise 원칙** — SKILL.md 본문은 1,500-2,000 단어 이내. 상세 내용은 references/로 분리.
+   - 컨텍스트 윈도우는 공공재. Claude가 이미 아는 정보는 반복하지 않는다.
+   - "이 문단이 토큰 비용만큼의 가치가 있는가?" 자문한다.
+5. **references 참조 명시** — SKILL.md에서 references/ 파일을 명확히 링크한다.
+
+상세 가이드: `references/writing-style-guide.md` 참조.
 
 **스크립트 생성 규칙:**
 
@@ -478,8 +504,10 @@ set -euo pipefail
 - 스크립트는 반복성/일관성/API가 필요한 작업에만 생성합니다
 - API > MCP > 직접 구현 우선순위를 지킵니다
 - api_mcp/rag 단계 이후에는 반드시 review 또는 prompt 단계를 추가합니다
-- SKILL.md 본문은 2,000-3,000 단어 이내로 유지합니다
+- **SKILL.md 본문은 1,500-2,000 단어 이내로 유지합니다** (컨텍스트 윈도우 효율)
 - 상세 내용은 `references/`로 분리합니다 (progressive disclosure)
+- **Writing Style 규칙을 반드시 적용합니다** (imperative form, third-person description)
+- **assets/ 폴더를 적절히 활용합니다** (템플릿, 이미지 등 출력용 파일)
 - 생성된 스킬은 반드시 테스트를 제안합니다
 - AskUserQuestion으로 고도화 기회를 제공합니다
 - 전문 용어는 항상 쉬운 설명을 함께 붙입니다
@@ -501,6 +529,7 @@ set -euo pipefail
 
 상세 내용은 아래 파일에서 확인하세요 (progressive disclosure):
 
+- **`references/writing-style-guide.md`** — SKILL.md 작성 규칙 (imperative form, description 품질, concise 원칙, 검증 체크리스트)
 - **`references/interview-guide.md`** — 인터뷰 방법론 + 페르소나 에이전트 설계
 - **`references/workflow-step-types.md`** — 6가지 단계 타입 상세 설명과 선택 기준
 - **`references/component-type-decision.md`** — 스킬/에이전트/커맨드 판단 기준 트리

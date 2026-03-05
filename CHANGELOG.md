@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0] - 2026-03-05
+
+### Added
+- Writing Style 가이드 통합 — SKILL.md 생성 시 imperative form, third-person description 강제
+- Concise 원칙 적용 — 본문 1,500-2,000 단어 기준 (기존 2,000-3,000에서 조정)
+- assets/ 폴더 지원 — 템플릿, 이미지, 폰트 등 출력용 파일 분리
+- references/writing-style-guide.md — 작성 규칙 + 검증 체크리스트 레퍼런스
+- Description 품질 기준 — trigger phrase 3-5개, 한/영 혼합, third-person 형식
+
+### Changed
+- Phase E 파일 구조에 assets/ 추가
+- SKILL.md 생성 템플릿에 Writing Style 규칙 + Assets 섹션 추가
+- AI 행동 규칙에 writing style, assets 활용, concise 원칙 명시
+
 ## [0.2.3] - 2026-03-02
 
 ### Fixed
