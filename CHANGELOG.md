@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0] - 2026-03-05
+
+### Added
+- Eval 기준 정의 — Phase D에서 워크플로우와 함께 eval 시나리오(정상 2-3개 + 엣지 1-2개) 정의
+- 자동 검증 스크립트 (`scripts/verify-skill.py`) — frontmatter, writing style, word count, references 자동 체크
+- Phase E-verify 단계 신설 — 파일 생성 직후 자동 검증, FAIL 시 자동 수정 후 재검증
+- `references/eval-guide.md` — Eval 방법론 레퍼런스 (시나리오 정의, 검증 항목, 자동 수정 규칙)
+
+### Changed
+- Phase D: 워크플로우 확인에 eval 시나리오 포함
+- Phase F: eval 시나리오 기반 구조적 테스트로 개선
+- AI 행동 규칙에 eval 정의 필수, verify-skill.py 실행 필수 추가
+
 ## [0.5.0] - 2026-03-05
 
 ### Added
