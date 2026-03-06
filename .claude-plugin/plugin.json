@@ -1,7 +1,7 @@
 {
   "name": "skillers-suda",
-  "version": "0.6.0",
-  "description": "4 persona Agent Team skill builder — spawn real agents to analyze and debate, then build working skills with quality standards and auto-verification",
+  "version": "0.7.0",
+  "description": "4 persona Agent Team skill builder — spawn real agents to analyze and debate, then build working skills with quality standards, auto-verification, and description optimization",
   "author": {
     "name": "fivetaku"
   },

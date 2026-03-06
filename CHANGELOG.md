@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0] - 2026-03-06
+
+### Added
+- Description 최적화 — SKILL.md 생성 후 description 후보 2-3개 생성 → 평가 기준(커버리지, 구체성, 간결성)으로 비교 → 최적 선택
+- Degrees of Freedom — Phase D에서 고정/가변 요소 식별, 가변 요소는 Settings 섹션에 기본값 + 변경 방법 명시
+- SKILL.md 템플릿에 Settings 섹션 추가 (가변 요소 있을 때만)
+
+### Changed
+- Phase D: 자유도 식별 단계 추가
+- Phase E: description 최적화 절차 추가
+- AI 행동 규칙에 description 최적화, 자유도 식별 필수 규칙 추가
+
 ## [0.6.0] - 2026-03-05
 
 ### Added
