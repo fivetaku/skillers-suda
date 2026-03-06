@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.0] - 2026-03-06
+
+### Added
+- Anthropic skill-creator 통합 — eval/benchmark/description 최적화 기능 원스톱 제공
+- Phase A: 대화 컨텍스트 추출 — 기존 대화에서 워크플로우 자동 추출
+- Phase B: MCP 추천 — 전문가 에이전트가 `references/mcp-catalog.md` 기반으로 적합한 MCP 서버 추천
+- Phase F: 자동 eval 실행 + 벤치마크 — subagent 병렬 실행, baseline 비교, grading, aggregate_benchmark, eval-viewer
+- Phase G: 반복 개선 — 피드백 기반 수정 + 일반화 원칙 + 반복 코드 번들 + blind comparison
+- Phase H: Description 최적화 — eval 쿼리 20개 → eval_review.html 리뷰 → run_loop.py (train/test 분할) → best_description 적용
+- Phase I: 패키징 — package_skill.py로 .skill 파일 생성
+- Scripts 9개 (skill-creator에서 복사): run_eval.py, run_loop.py, utils.py, aggregate_benchmark.py, generate_report.py, improve_description.py, package_skill.py, quick_validate.py
+- Agents 3개: grader.md, comparator.md, analyzer.md (eval 채점/비교/분석)
+- Eval-viewer: generate_review.py + viewer.html (브라우저 기반 eval 결과 리뷰)
+- Assets: eval_review.html (description 최적화용 eval 쿼리 리뷰 템플릿)
+- References: schemas.md (JSON 스키마), mcp-catalog.md (MCP 서버 카탈로그), improvement-principles.md (개선 원칙), trigger-mechanism.md (트리거 메커니즘)
+- THIRD_PARTY_LICENSES (Apache 2.0, Anthropic skill-creator)
+
+### Changed
+- Phase D: eval 시나리오를 evals.json 형식으로 강화 (should-trigger / should-not-trigger, 현실적 프롬프트)
+- Phase E: Description 작성을 Pushy 전략으로 변경 (undertrigger 방지), Why 설명 우선 원칙
+- AI 행동 규칙: eval 자동 실행, description 최적화, 일반화 원칙, 반복 코드 번들 추가
+
+### Removed
+- Phase E의 description 후보 2-3개 비교 방식 (run_loop.py 자동 최적화로 대체)
+
 ## [0.7.0] - 2026-03-06
 
 ### Added
