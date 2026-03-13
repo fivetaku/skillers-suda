@@ -123,6 +123,9 @@ tools: [Read, Write, ...]
 # 에이전트 시스템 프롬프트
 ```
 
+> 에이전트 파일 표준 포맷 상세: `docs/agent-file-standard.md` 참조.
+> 확장 메타데이터 (`source`, `created`, `recommended-for`)를 frontmatter에 포함하면 kkirikkiri와의 연동이 자동으로 동작합니다.
+
 ### Command 파일 구조
 ```yaml
 ---

@@ -20,6 +20,14 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
       "expectations": [
         "The output includes X",
         "The skill used script Y"
+      ],
+      "quality_metrics": [
+        {
+          "name": "completeness",
+          "criteria": "출력물이 요청된 모든 항목을 포함하는가",
+          "evaluation_steps": ["항목 목록 추출", "존재 여부 확인", "비율 산출"],
+          "threshold": 0.7
+        }
       ]
     }
   ]
@@ -33,6 +41,7 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
 - `evals[].expected_output`: Human-readable description of success
 - `evals[].files`: Optional list of input file paths (relative to skill root)
 - `evals[].expectations`: List of verifiable statements
+- `evals[].quality_metrics`: (optional) List of continuous quality metrics. Each metric has `name`, `criteria` (one sentence describing what to evaluate), `evaluation_steps` (3-5 steps for the LLM grader to follow), and `threshold` (0-1 pass cutoff). See `references/eval-guide.md` section 6 for templates by skill type.
 
 ---
 
@@ -145,7 +154,12 @@ Output from the grader agent. Located at `<run-dir>/grading.json`.
       }
     ],
     "overall": "Assertions check presence but not correctness."
-  }
+  },
+  "quality_metrics": [
+    {"name": "completeness", "score": 0.85, "threshold": 0.7, "status": "PASS"}
+  ],
+  "overall_verdict": "pass",
+  "verdict_reason": "All expectations passed. Quality metrics: 3/3 PASS."
 }
 ```
 
@@ -157,6 +171,9 @@ Output from the grader agent. Located at `<run-dir>/grading.json`.
 - `claims`: Extracted and verified claims from the output
 - `user_notes_summary`: Issues flagged by the executor
 - `eval_feedback`: (optional) Improvement suggestions for the evals, only present when the grader identifies issues worth raising
+- `quality_metrics`: (optional) Continuous quality metric results. Each entry has `name`, `score` (0-1), `threshold`, and `status` ("PASS" / "WARN" / "FAIL"). Present when the eval defined `quality_metrics`.
+- `overall_verdict`: (optional) Aggregate verdict: `"pass"`, `"conditional_pass"`, or `"fail"`. See `references/eval-guide.md` section 8 for judgment rules.
+- `verdict_reason`: (optional) Human-readable explanation of the overall verdict.
 
 ---
 
