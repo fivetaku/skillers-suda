@@ -313,9 +313,28 @@ expectations 외에, 출력 품질을 연속 점수로 평가할 quality_metrics
 
 **워크플로우 + Eval 확인:**
 
-워크플로우 설계 결과와 eval 시나리오를 AskUserQuestion의 markdown 프리뷰로 보여준다.
+워크플로우 설계 결과와 eval 시나리오를 **일반 텍스트로 먼저 출력**한 후, AskUserQuestion으로 간결한 확인만 받는다.
 
-**EXECUTE:** 아래 JSON의 markdown 필드를 워크플로우 설계 결과(단계별 흐름 + eval 시나리오)로 채운 후 AskUserQuestion 도구를 즉시 호출한다:
+> **절대 금지:** AskUserQuestion의 `markdown` 필드에 워크플로우/테이블/흐름도를 넣지 마. Claude Code에서 접혀서 안 보인다.
+
+**Step D-1: 워크플로우 + Eval을 일반 텍스트로 출력**
+
+단계별 흐름과 eval 시나리오 목록을 일반 텍스트로 출력한다. 예시:
+```
+워크플로우 설계 결과:
+
+1단계: [설명]
+2단계: [설명]
+...
+
+Eval 시나리오:
+- should-trigger: [시나리오 1], [시나리오 2]
+- should-not-trigger: [시나리오 1]
+```
+
+**Step D-2: AskUserQuestion으로 확인**
+
+**EXECUTE:** 텍스트 출력 직후 AskUserQuestion 도구를 즉시 호출한다:
 
 ```json
 {
@@ -326,8 +345,7 @@ expectations 외에, 출력 품질을 연속 점수로 평가할 quality_metrics
       "options": [
         {
           "label": "이대로 진행 (추천)",
-          "description": "이 워크플로우대로 파일을 만들고 자동 검증까지 해드릴게요.",
-          "markdown": "(동적: 단계별 흐름 + eval 시나리오 목록)"
+          "description": "이 워크플로우대로 파일을 만들고 자동 검증까지 해드릴게요."
         },
         {"label": "수정할 부분 있어", "description": "워크플로우나 테스트 기준을 바꾸고 싶은지 알려주세요."},
         {"label": "나중에 할게", "description": "여기서 멈출게요. 나중에 다시 시작할 수 있어요."}

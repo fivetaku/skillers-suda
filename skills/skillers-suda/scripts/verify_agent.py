@@ -94,11 +94,11 @@ def main():
     # Strip frontmatter for body checks
     body = re.sub(r"^---\n.*?\n---\n?", "", content, count=1, flags=re.DOTALL)
 
-    # 6. role_section (FAIL) — "## 역할" or "## Role"
-    if re.search(r"^##\s+(역할|Role)\s*$", body, re.MULTILINE):
-        add_check(results, "role_section", "PASS", "Role section found")
+    # 6. role_section (FAIL) — "## 역할" or "## Role" or "## 정체성" or Identity or Core Mission
+    if re.search(r"^##\s+(역할|Role|정체성|Identity|Your Identity|Core Mission)", body, re.MULTILINE):
+        add_check(results, "role_section", "PASS", "Role/Identity section found")
     else:
-        add_check(results, "role_section", "FAIL", "No '## 역할' or '## Role' section found in body")
+        add_check(results, "role_section", "FAIL", "No role section found (expected: '## 역할', '## 정체성', '## Role', or '## Identity')")
 
     # 7. rnr_section (WARN) — "## R&R" or "### 해야 할 것"
     if re.search(r"^##\s+R&R\s*$", body, re.MULTILINE) or re.search(r"^###\s+해야 할 것\s*$", body, re.MULTILINE):
@@ -115,7 +115,38 @@ def main():
     else:
         add_check(results, "word_count", "WARN", f"{words} words — too long (target: 500-1,500)")
 
-    # 9. filename_match (WARN) — filename (no ext) matches name field
+    # 9. identity_section (WARN) — "## 정체성" or "## Identity" or "Your Identity"
+    if re.search(r"^##\s+(정체성|Identity|Your Identity)", body, re.MULTILINE):
+        add_check(results, "identity_section", "PASS", "Identity section found")
+    else:
+        add_check(results, "identity_section", "WARN", "No Identity section found — L2+ agents should have '## 정체성' with Role/Personality/Experience")
+
+    # 10. success_metrics (WARN) — "## 성공 기준" or "## Success Metrics" or "성공입니다"
+    if re.search(r"^##\s+(성공 기준|Success Metrics)", body, re.MULTILINE) or "성공입니다" in body or "successful when" in body.lower():
+        add_check(results, "success_metrics", "PASS", "Success Metrics section found")
+    else:
+        add_check(results, "success_metrics", "WARN", "No Success Metrics found — agents should define measurable completion criteria")
+
+    # 11. critical_rules (WARN) — "## 핵심 원칙" or "## Critical Rules" or "-First" pattern
+    if re.search(r"^##\s+(핵심 원칙|Critical Rules)", body, re.MULTILINE) or re.search(r"-First\s", body):
+        add_check(results, "critical_rules", "PASS", "Critical Rules section found")
+    else:
+        add_check(results, "critical_rules", "WARN", "No Critical Rules found — consider adding '[Value]-First' principles")
+
+    # 12. description_pushy (WARN) — description should have trigger keywords (comma/dash separated, 30+ chars)
+    if fm_match:
+        desc_match2 = re.search(r"^description:\s*(.+)", fm_match.group(1), re.MULTILINE)
+        if desc_match2:
+            desc_val = desc_match2.group(1).strip()
+            has_triggers = "," in desc_val or "—" in desc_val or "-" in desc_val
+            if has_triggers and len(desc_val) >= 30:
+                add_check(results, "description_pushy", "PASS", f"Description has trigger keywords ({len(desc_val)} chars)")
+            elif len(desc_val) < 30:
+                add_check(results, "description_pushy", "WARN", f"Description may lack trigger keywords ({len(desc_val)} chars) — use Pushy strategy: include comma-separated trigger situations")
+            else:
+                add_check(results, "description_pushy", "WARN", "Description exists but may lack diverse trigger keywords — add comma-separated situations")
+
+    # 13. filename_match (WARN) — filename (no ext) matches name field
     filename_no_ext = os.path.splitext(os.path.basename(agent_path))[0]
     if name_value:
         if filename_no_ext == name_value:
