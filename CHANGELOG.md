@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0] - 2026-03-15
+
+### Added
+- agent-templates.md: Identity 4요소 (역할/성격/기억/경험), Critical Rules ("[가치]-First"), Success Metrics, Deliverable 템플릿, Communication Style 추가
+- agent-templates.md: L1/L2/L3 에이전트 품질 등급 체계 정의
+- agent-templates.md: frontmatter 확장 필드 (vibe, source, recommended-for, team-compatible)
+- verify_agent.py: identity_section, success_metrics, critical_rules, description_pushy 검증 4종 추가
+
+### Fixed
+- Phase D AskUserQuestion markdown collapse ("N lines hidden") 문제 해결 — 텍스트 출력 → 간단 확인 분리
+
+## [1.1.0] - 2026-03-13
+
+### Added
+- 에이전트 연동 강화 — kkirikkiri 팀 빌더와의 호환성 개선
+- eval 품질 메트릭 추가
+
 ## [1.0.0] - 2026-03-06
 
 ### Added
