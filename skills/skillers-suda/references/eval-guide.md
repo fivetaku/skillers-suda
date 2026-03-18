@@ -1,7 +1,9 @@
 # Eval 가이드
 
+> v1.1.0+: quality_metrics, identity_section 추가. CHANGELOG 참조.
+
 생성된 스킬의 품질을 체계적으로 검증하기 위한 방법론.
-Anthropic의 skill-creator eval 패턴을 skillers-suda 워크플로우에 맞게 적용.
+Anthropic의 skill-creator eval 패턴을 skillers-suda Phase E-verify에서 적용.
 
 ## 1. Eval 기준 정의
 

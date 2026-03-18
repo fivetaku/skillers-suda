@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1] - 2026-03-18
+
+### Fixed
+- eval-guide.md 버전 노트 추가 (v1.1.0+ 변경사항 참조)
+- eval-guide.md Phase 참조를 "Phase E-verify"로 통일
+
 ## [1.2.0] - 2026-03-15
 
 ### Added
