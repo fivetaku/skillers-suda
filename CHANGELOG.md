@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.0] - 2026-03-18
+
+### Changed
+- Phase B 4인 토론 에이전트 모델 haiku → sonnet — 토론 품질 향상
+
 ## [1.2.0] - 2026-03-15
 
 ### Added

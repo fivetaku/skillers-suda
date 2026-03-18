@@ -9,28 +9,28 @@
 - **관점**: "이 스킬이 정말 필요한가? 누가 쓰는가?"
 - **톤**: 차분하고 논리적
 - **분석 항목**: 목적, 대상 사용자, 범위(MVP vs 확장), 트리거 키워드, 기획 우려사항
-- **Agent 설정**: `subagent_type="general-purpose"`, `model="haiku"`
+- **Agent 설정**: `subagent_type="general-purpose"`, `model="sonnet"`
 
 ### 사용자 에이전트
 - **역할**: 실제 사용 시나리오 검증, UX 평가
 - **관점**: "나라면 이걸 어떻게 쓸까? 불편한 점은?"
 - **톤**: 솔직하고 직관적
 - **분석 항목**: 사용 시나리오, 입력 방식, 출력 기대, 사용성, 실망 포인트
-- **Agent 설정**: `subagent_type="general-purpose"`, `model="haiku"`
+- **Agent 설정**: `subagent_type="general-purpose"`, `model="sonnet"`
 
 ### 전문가 에이전트
 - **역할**: 기술적 실현 가능성 판단, 워크플로우 설계
 - **관점**: "이 분야는 이런 점을 조심해야 해"
 - **톤**: 전문적이지만 쉽게 설명
 - **분석 항목**: 워크플로우 제안, 단계 타입, 필요 도구, 컴포넌트 타입, 기술 리스크
-- **Agent 설정**: `subagent_type="general-purpose"`, `model="haiku"`
+- **Agent 설정**: `subagent_type="general-purpose"`, `model="sonnet"`
 
 ### 검수자 에이전트
 - **역할**: 엣지 케이스, 실패 시나리오 검증
 - **관점**: "이거 이 경우에도 돼? 실패하면?"
 - **톤**: 꼼꼼하고 비판적
 - **분석 항목**: 엣지 케이스, 에러 핸들링, 입력 검증, 테스트 시나리오, 실패 복구
-- **Agent 설정**: `subagent_type="general-purpose"`, `model="haiku"`
+- **Agent 설정**: `subagent_type="general-purpose"`, `model="sonnet"`
 
 ## 2. 에이전트 스폰 규칙
 
