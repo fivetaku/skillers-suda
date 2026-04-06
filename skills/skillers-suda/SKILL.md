@@ -313,13 +313,11 @@ expectations 외에, 출력 품질을 연속 점수로 평가할 quality_metrics
 
 **워크플로우 + Eval 확인:**
 
-워크플로우 설계 결과와 eval 시나리오를 **일반 텍스트로 먼저 출력**한 후, AskUserQuestion으로 간결한 확인만 받는다.
+워크플로우 설계 결과와 eval 시나리오를 AskUserQuestion의 `preview` 필드 또는 일반 텍스트로 보여준 후, 확인을 받는다.
 
-> **절대 금지:** AskUserQuestion의 `markdown` 필드에 워크플로우/테이블/흐름도를 넣지 마. Claude Code에서 접혀서 안 보인다.
+**Step D-1: 워크플로우 + Eval을 보여주기**
 
-**Step D-1: 워크플로우 + Eval을 일반 텍스트로 출력**
-
-단계별 흐름과 eval 시나리오 목록을 일반 텍스트로 출력한다. 예시:
+단계별 흐름과 eval 시나리오 목록을 보여준다. 예시:
 ```
 워크플로우 설계 결과:
 
