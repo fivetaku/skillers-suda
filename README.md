@@ -1,190 +1,191 @@
-# 스킬러들의 수다 (Skillers-Suda)
+English | [한국어](README.ko.md)
 
-4명의 전문가가 수다 떨면서 바이브코더의 모호한 아이디어를 동작하는 멀티 단계 워크플로우 스킬로 변환합니다. 스킬 생성 후 품질 검증, 자동 평가, 트리거 최적화까지 한 번에 처리합니다.
+# skillers-suda
 
----
+> **Four expert agents chatter, debate, and turn your vague idea into a working Claude Code skill.**
 
-## 이런 분을 위한 도구입니다
+You describe an idea. Four personas — planner, user, expert, reviewer — spin up as real parallel agents, argue it out, then walk you through a structured interview. What comes out the other end is a fully scaffolded skill, agent, or command, automatically verified against 9 quality criteria, benchmarked with A/B eval, and trigger-optimized so Claude actually knows when to use it.
 
-- Claude Code 스킬/에이전트/커맨드를 만들고 싶지만 구조를 모르는 분
-- "번역 스킬 만들어줘" 한마디로 동작하는 스킬을 얻고 싶은 분
-- 프롬프트, 스크립트, API, MCP를 조합한 멀티 단계 워크플로우를 설계하고 싶은 분
-- 스킬을 만든 뒤 대화로 계속 개선하고 싶은 분
+[Quick Start](#quick-start) • [Why skillers-suda?](#why-skillers-suda) • [How It Works](#how-it-works) • [Features](#features) • [Experts](#the-four-experts) • [Requirements](#requirements)
 
 ---
 
-## 어떻게 작동하나요?
+## Quick Start
 
-4명의 전문가(기획자/사용자/전문가/검수자)가 내부적으로 수다를 떤 뒤, 정리된 제안을 보여줍니다:
-
-1. **인터뷰** -- 3-5개 질문으로 핵심 정보를 수집해요
-2. **워크플로우 설계** -- 6가지 단계 타입을 조합해서 워크플로우를 자동 설계해요
-3. **파일 생성** -- SKILL.md + scripts/ + references/ 전체 구조를 자동 생성해요
-4. **품질 검증** -- 9개 항목을 자동으로 검사하고, 미달 항목은 즉시 수정해요
-5. **자동 평가(Eval)** -- 스킬 적용 전후를 비교해서 실제 효과를 정량으로 측정해요
-6. **트리거 최적화** -- 어떤 문장에서 스킬이 켜지는지를 자동으로 다듬어요
-7. **기존 스킬 분석** -- 이미 있는 스킬을 분석해서 개선점을 제안해요
-8. **테스트 + 고도화** -- 만든 스킬을 테스트하고, 대화로 계속 개선해요
-
-```
-유저: "번역 스킬 만들어줘"
-         ↓
-4명 페르소나 내부 논의 (기획자/사용자/전문가/검수자)
-         ↓
-"우리끼리 얘기해봤는데, 이렇게 하면 어때요?"
-         ↓
-워크플로우 단계 설계 (프롬프트/스크립트/API·MCP/RAG/검토/생성)
-         ↓
-SKILL.md + scripts/ + references/ 자동 생성
-         ↓
-품질 자동 검증 (9개 항목) → FAIL이면 자동 수정
-         ↓
-Eval 자동 실행 (스킬 적용 vs 미적용 A/B 비교)
-         ↓
-Description 자동 최적화 (트리거 정확도 개선)
-         ↓
-"테스트해볼까요?" → 피드백 → 고도화 반복
-```
-
-모든 질문에 **설명과 장단점**이 있어서, 개발 지식 없이도 고를 수 있어요.
-모르겠으면 **(추천)** 표시된 걸 고르면 돼요.
-
----
-
-## 설치 방법
-
-### 1. 마켓플레이스 등록 (처음 한 번만)
+### 1. Add the marketplace (once)
 
 ```
 /plugin marketplace add https://github.com/fivetaku/gptaku_plugins.git
 ```
 
-### 2. 플러그인 설치
+### 2. Install the plugin
 
 ```
 /plugin install skillers-suda
 ```
 
-> 설치 후에는 Claude Code를 **재시작**하세요.
+### 3. Restart Claude Code
 
-### 사전 요구사항
+### 4. Build your first skill
 
-없습니다. 바로 사용 가능합니다.
-
-### 처음 시작하기
 ```
-/skillers-suda 번역 스킬 만들어줘
+/skillers-suda make a translation skill
+```
+
+Or just say what you want in natural language:
+
+```
+make me a skill
+create an agent
+build a command
 ```
 
 ---
 
-## 핵심 기능
+## Why skillers-suda?
 
-### 1. 4명 페르소나 인터뷰
-
-코딩 지식이 없어도 돼요. 4명의 전문가가 수다를 떨면서 여러분의 아이디어를 구체화해요:
-- **기획자** — "누가 쓸 건데? 뭘 해결하는 거야?"
-- **사용자** — "나라면 이걸 어떻게 쓸까?"
-- **전문가** — "이 분야는 이런 점을 조심해야 해"
-- **검수자** — "이거 이 경우에도 돼?"
-
-### 2. 6가지 워크플로우 단계 타입
-
-단순 프롬프트 스킬이 아닌, 멀티 단계 워크플로우를 자동 설계해요:
-
-| 타입 | 설명 | 예시 |
-|------|------|------|
-| prompt | Claude가 추론으로 처리 | 텍스트 분석, 요약, 번역 |
-| script | 반복성/일관성/API → Python/Bash | API 호출, 데이터 파싱 |
-| api_mcp | 외부 도구 연동 (API > MCP) | Slack 전송, DB 조회 |
-| rag | references/에서 지식 검색 | 용어집, 스타일 가이드 |
-| review | 품질 검토 (AI/사용자) | 번역 정확도, 코드 품질 |
-| generate | 최종 결과물 출력 | 파일 생성, 보고서 |
-
-### 3. 컴포넌트 자동 판단
-
-인터뷰 결과에 따라 스킬/에이전트/커맨드 중 적합한 형태를 자동으로 선택해요.
-
-### 4. 테스트 + 고도화 루프
-
-만든 스킬을 바로 테스트하고, 대화로 계속 개선할 수 있어요:
-- "톤이 딱딱해" → 프롬프트 수정
-- "여기에 API 연동해줘" → 새 단계 추가
-- "스크립트가 느려" → 스크립트 최적화
-
-### 5. 자동 품질 검증 (verify-skill.py)
-
-스킬 생성 직후 자동으로 구조적 품질을 검증합니다. 9개 항목을 순서대로 확인하고, FAIL 항목은 자동으로 수정한 뒤 재검증합니다.
-
-| 항목 | 설명 |
-|------|------|
-| frontmatter | YAML 헤더가 올바른 형식인지 |
-| name | 스킬 이름이 있는지 |
-| description | 트리거 설명이 있는지 |
-| third_person 형식 | description이 3인칭으로 쓰였는지 |
-| trigger_phrases | 트리거 문장이 충분히 있는지 |
-| word_count | 내용이 너무 짧지 않은지 |
-| imperative_form | 지시문이 명령형으로 쓰였는지 |
-| references_exist | references/에 필요한 파일이 있는지 |
-| progressive_disclosure | 단계별 공개 구조인지 |
-
-각 항목은 PASS / WARN / FAIL 3단계로 판정됩니다.
-
-### 6. 자동 Eval + 벤치마크 (Phase F)
-
-스킬 생성 후 자동으로 eval 시나리오를 실행합니다. 스킬을 적용했을 때(with_skill)와 적용하지 않았을 때(without_skill)의 결과를 병렬로 비교해서, 실제로 얼마나 효과가 있는지 정량으로 측정합니다.
-
-- 채점 에이전트가 assertion 기반으로 각 시나리오에 점수를 매깁니다
-- 벤치마크 집계 에이전트가 전체 패턴을 분석합니다
-- `eval_review.html`로 결과를 브라우저에서 바로 확인할 수 있습니다
-
-### 7. Description 자동 최적화 (Phase H)
-
-스킬이 어떤 문장에서 켜져야 하는지(should-trigger)와 켜지면 안 되는지(should-not-trigger)를 약 20개 eval 쿼리로 자동 생성합니다. 이 쿼리를 train/test 60/40으로 나눠서 과적합을 방지하고, 최대 5회 반복을 통해 가장 정확한 description을 자동으로 선택합니다.
-
-### 8. 기존 스킬 분석 모드
-
-`/skillers-suda 분석 [스킬경로]` 로 이미 만들어진 스킬을 분석하고 개선점을 제안합니다. 4명의 페르소나가 기존 스킬을 검토하고, 구조적 문제와 개선 방향을 정리해줍니다.
+- **No coding knowledge required** — every question comes with explanations and tradeoffs; pick the one marked (recommended) if unsure
+- **Real agents, not simulated personas** — four Claude subagents run in parallel, each analyzing your idea from a different angle before the interview even starts
+- **Multi-step workflow design** — not a single-prompt skill; six step types (prompt, script, api_mcp, rag, review, generate) are composed automatically based on your answers
+- **Built-in quality gate** — 9 structural checks run immediately after generation; FAIL items are auto-fixed before you ever see the result
+- **A/B eval baked in** — skill-applied vs. baseline results are compared automatically so you know the skill actually helps
+- **Trigger optimization that works** — description is refined over up to 5 iterations with train/test split to prevent overfitting
+- **Analysis mode included** — point it at any existing skill or agent file and get a four-perspective critique with actionable improvement suggestions
 
 ---
 
-## 사용법
+## How It Works
 
-| 명령어 | 설명 |
-|--------|------|
-| `/skillers-suda [스킬 설명]` | 바로 인터뷰 시작 |
-| `/skillers-suda` | 인터랙티브 메뉴 |
-| `/skillers-suda 분석 [스킬경로]` | 기존 스킬 분석 + 개선점 제안 |
+```
+You: "make a translation skill"
+         ↓
+Four expert agents spawn in parallel (planner / user / expert / reviewer)
+         ↓
+"We talked it over — here's what we think..."
+         ↓
+Structured interview (3–5 questions, each with options + explanations)
+         ↓
+Workflow design (prompt / script / api_mcp / rag / review / generate steps)
+         ↓
+SKILL.md + scripts/ + references/ generated automatically
+         ↓
+Quality verification (9 checks) → FAIL items auto-fixed → re-verified
+         ↓
+Eval runs (with_skill vs. without_skill A/B comparison)
+         ↓
+Description optimized (up to 5 iterations, 60/40 train/test split)
+         ↓
+"Want to test it?" → feedback → refinement loop
+```
 
-### 자연어 트리거
+---
 
-- "스킬 만들어줘"
-- "에이전트 만들어줘"
-- "커맨드 만들어줘"
-- "스킬러들의 수다"
+## Features
+
+### Skill creation workflow (9 phases)
+
+| Phase | What happens |
+|-------|-------------|
+| A — Idea collection | Gathers your idea via AskUserQuestion; extracts from conversation context if a workflow is already present |
+| B — Expert team spawn | Four agents run in parallel; each analyzes the idea from their role perspective |
+| C — Interview | 3–5 structured questions with options, descriptions, and recommended defaults |
+| D — Workflow confirmation | Step types and sequence confirmed before any files are written |
+| E — File generation | SKILL.md + scripts/ + references/ scaffold written automatically |
+| F — Eval | with_skill vs. without_skill scenarios compared; scoring agent grades each; results in eval_review.html |
+| G — Quality verification | verify-skill.py checks 9 structural items; auto-fixes FAILs and re-verifies |
+| H — Description optimization | run_loop.py generates ~20 trigger/non-trigger queries, iterates up to 5× to find the best description |
+| I — Test and refine | Interactive refinement loop — adjust tone, add API steps, optimize scripts |
+
+### Quality verification (9 checks)
+
+| Check | What it validates |
+|-------|-----------------|
+| frontmatter | YAML header is well-formed |
+| name | Skill name is present |
+| description | Trigger description is present |
+| third_person | Description uses third-person form |
+| trigger_phrases | Sufficient trigger phrases exist |
+| word_count | Content is not too sparse |
+| imperative_form | Instructions use imperative form |
+| references_exist | Referenced files in references/ are present |
+| progressive_disclosure | Stepwise disclosure structure is used |
+
+Each check reports PASS / WARN / FAIL. FAILs are auto-corrected before the skill is handed to you.
+
+### Workflow step types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| prompt | Claude handles via reasoning | Text analysis, summarization, translation |
+| script | Repeatable / consistent / API work → Python or Bash | API calls, data parsing |
+| api_mcp | External tool integration (API preferred over MCP) | Slack send, DB query |
+| rag | Knowledge retrieval from references/ | Glossary, style guide |
+| review | Quality check (AI or user) | Translation accuracy, code quality |
+| generate | Final output production | File creation, report output |
+
+### Analysis mode
+
+Run `/skillers-suda analyze <path>` on any existing skill or agent file. The four experts each review from their own perspective and produce a consolidated improvement report.
+
+```
+/skillers-suda analyze skills/my-skill/SKILL.md
+/skillers-suda analyze .claude/agents/my-agent.md
+```
+
+### Component selection
+
+After the interview, the skill automatically determines whether your use case calls for a skill, agent, or command — and generates the appropriate file structure.
+
+---
+
+## The Four Experts
+
+| Expert | Role | Asks |
+|--------|------|------|
+| Planner | Direction and scope | "Who uses this? What problem does it solve?" |
+| User | UX validation | "How would I actually use this?" |
+| Expert | Technical feasibility | "Here's what to watch out for in this domain" |
+| Reviewer | Edge case detection | "Does this still work in this case?" |
+
+All four spawn as real parallel Claude subagents — not role-play simulation.
+
+---
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/skillers-suda` | Interactive menu (new skill / analyze / how-to) |
+| `/skillers-suda [description]` | Start interview immediately with your idea |
+| `/skillers-suda analyze [path]` | Analyze an existing skill or agent file |
+
+### Natural language triggers
+
+- "make me a skill"
+- "create an agent"
+- "build a command"
+- "skillers-suda"
 - "skill builder"
 
 ---
 
-## 구성요소
+## Requirements
 
-| 구성요소 | 설명 |
-|----------|------|
-| 커맨드 | `/skillers-suda` -- 메인 라우터 |
-| 스킬 | `skillers-suda` -- 9단계 인터뷰 기반 스킬 생성 워크플로우 |
-| 스크립트 | `verify-skill.py` -- 품질 자동 검증 |
-| 스크립트 | `run_eval.py` -- eval 자동 실행 |
-| 스크립트 | `run_loop.py` -- description 자동 최적화 |
-| 에셋 | `eval_review.html` -- eval 쿼리 리뷰 UI |
+- [Claude Code](https://docs.anthropic.com/claude-code) CLI
+- Claude Max/Pro subscription or a supported Claude API key
+
+No other dependencies. No npm install. No build step.
 
 ---
 
-## 요구사항
-
-- Claude Code CLI
-
----
-
-## 라이선스
+## License
 
 MIT
+
+---
+
+<div align="center">
+
+**Say one sentence. Get a working skill.**
+
+</div>
