@@ -4,6 +4,8 @@
 
 워크플로우에서 script 타입 단계가 필요할 때 이 템플릿을 참고하여 스크립트를 생성한다.
 
+**언어 선택 기본값: Python.** Bash는 Windows PowerShell/CMD에서 `set -euo pipefail`, process substitution, ANSI 색상, Unix 유틸(find/awk/sed/tr)이 동작하지 않는다. 크로스플랫폼 보장을 위해 Python을 우선 선택하고, Bash는 macOS/Linux 전용이 확실한 경우에만 사용한다.
+
 ## Python 스크립트 템플릿
 
 ### 기본 템플릿

@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 # 생성된 스킬의 구조와 품질을 검증하는 스크립트
 # Usage: bash validate-skill.sh <skill_directory>
+#
+# DEPRECATED (scheduled for removal in the next release):
+#   This bash script does not run on Windows PowerShell / CMD without
+#   Git Bash or WSL. Use the cross-platform equivalents instead:
+#     - scripts/validate-skill.js           (Node.js, identical checks)
+#     - skills/skillers-suda/scripts/verify-skill.py  (Python, richer output)
+#   The in-plugin workflow (Phase E-verify) already invokes verify-skill.py;
+#   this file is kept temporarily only for external callers.
 
 set -euo pipefail
+
+echo "[DEPRECATION] validate-skill.sh is deprecated. Prefer 'node scripts/validate-skill.js' or 'python3 skills/skillers-suda/scripts/verify-skill.py'." >&2
 
 # 색상
 RED='\033[0;31m'

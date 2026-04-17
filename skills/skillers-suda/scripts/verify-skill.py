@@ -16,7 +16,7 @@ def main():
         print(json.dumps({"error": f"File not found: {skill_path}"}))
         sys.exit(1)
 
-    with open(skill_path, "r") as f:
+    with open(skill_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     results = {

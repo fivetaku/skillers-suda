@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.1] - 2026-04-17
+
+### Fixed
+- Windows/PowerShell 호환성 — `select.select()` 파이프 사용으로 인한 `WinError 10038` 크래시 해결. Phase F/G/H (eval, 반복 개선, description 최적화)가 Windows에서 정상 동작.
+- UTF-8 멀티바이트 청크 경계 안전 처리 — `codecs.IncrementalDecoder` 도입으로 한글 등이 8KB 경계에서 잘려도 손상 없음.
+- EOF 직전 newline 없는 마지막 JSON 이벤트 누락 방지.
+- 전 스크립트 `read_text`/`write_text`/`open()`에 `encoding="utf-8"` 명시 — Windows 기본 cp949 회피.
+- `shutil.which("claude")` 사전 해상 — PowerShell 환경의 `.cmd`/`.exe` 자동 탐색.
+- `stdout`/`stderr` UTF-8 재설정 — Windows 콘솔 한글 로그 깨짐 방지.
+
+### Changed
+- reader thread 예외를 `--verbose` 모드에서 stderr로 노출 (silent failure 제거).
+- `validate-skill.sh`에 deprecation 경고 — 다음 릴리스에서 제거 예정. `validate-skill.js` 또는 `verify-skill.py` 사용 권장.
+- script-templates.md 언어 기본값을 Python으로 명시 (크로스플랫폼).
+- SKILL.md Phase E-verify/F에 PowerShell 변환 주석 추가.
+
 ## [1.3.0] - 2026-03-18
 
 ### Changed
