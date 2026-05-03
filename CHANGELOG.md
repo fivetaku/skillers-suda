@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.2] - 2026-05-04
+
+### Added
+- `references/personas.md` 신설 — 도메인별 4 페르소나 카탈로그 (기본/헬스케어/이커머스/보안/데이터/교육/콘텐츠 7 도메인)
+
+### Changed
+- SKILL.md "4명의 전문가" 섹션 — 인원수 4 floor는 검증 다중성 본질로 유지, 페르소나 정의는 도메인별 가변 명시
+- 사용자 패턴 적용: Schema(개수) 보존 + Content(정의) 자유
+
+### Preserved
+- 4 페르소나 병렬 스폰 (검증 다중성)
+- AskUserQuestion 호출 강제 (parser contract)
+- frontmatter 형식 (Claude Code 다운스트림 호환)
+- 단어 수 ceiling 1,500-2,000 (인지 부하 가드)
+
 ## [1.3.1] - 2026-04-17
 
 ### Fixed
