@@ -473,6 +473,7 @@ description은 스킬 트리거의 핵심 메커니즘이다. Claude는 스킬�
 4. **Concise 원칙** — SKILL.md 본문은 1,500-2,000 단어 이내. 상세 내용은 references/로 분리.
    - 컨텍스트 윈도우는 공공재. Claude가 이미 아는 정보는 반복하지 않는다.
 5. **references 참조 명시** — SKILL.md에서 references/ 파일을 명확히 링크한다.
+6. **규율형(Discipline) 스킬이면 합리화 차단 장치 필수** — 생성하려는 스킬이 "X 전에 반드시 Y"를 강제하거나 AI가 압박받으면 건너뛸 규칙을 담는다면(예: 검증·테스트·역할분리 강제), SKILL.md에 Iron Law + 합리화 차단표(Excuse→Reality) + Red Flags + "Spirit vs Letter" 4종을 포함한다. 번역·포맷팅 같은 기법형 스킬에는 넣지 않는다(토큰 낭비). 판별·템플릿: `references/writing-style-guide.md` §6.
 
 상세 가이드: `references/writing-style-guide.md` 참조.
 

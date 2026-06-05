@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.4] - 2026-06-05
+
+### Added
+- SKILL.md 작성 원칙 6번 — 규율형(Discipline) 스킬 생성 시 합리화 차단 장치 4종(Iron Law + Excuse→Reality 표 + Red Flags + Spirit vs Letter) 필수. 기법형(번역·포맷)엔 넣지 않는 가드 포함.
+- `references/writing-style-guide.md` §6 신설 — 규율형/기법형 판별 기준 + 합리화 차단 장치 작성 템플릿.
+
+### Why
+obra/superpowers `writing-skills`의 "Bulletproofing Skills Against Rationalization" 패턴 도입.
+LLM은 압박 시 규칙의 루프홀을 찾으므로 규율형 규칙은 실행 시점 합리화 차단 장치가 필요. 단 기법형 스킬엔 토큰 낭비라 조건부 적용.
+
 ## [1.3.3] - 2026-05-04
 
 ### Changed
