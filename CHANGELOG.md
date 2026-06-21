@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.3 — 2026-06-21
+
+- GitHub star is now **opt-in** — on first run the command asks once via AskUserQuestion (`네, ⭐ 눌러주기` / `아니요`) instead of auto-starring. The star logic moved into `setup.sh` and records the choice (`~/.gptaku-setup/<plugin>.star.json`) so it never re-asks. `setup.sh` no longer stars anything automatically.
+
 ## [1.3.4] - 2026-06-05
 
 ### Added
