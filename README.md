@@ -1,6 +1,10 @@
-English | [한국어](README.ko.md)
+English | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [Español](README.es.md)
 
 # skillers-suda
+
+<p align="center">
+  <img src="assets/skillers-suda-hero-01.png" alt="skillers-suda" width="320">
+</p>
 
 > **Four expert agents chatter, debate, and turn your vague idea into a working Claude Code skill.**
 

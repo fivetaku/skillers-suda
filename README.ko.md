@@ -1,6 +1,10 @@
-[English](README.md) | 한국어
+[English](README.md) | 한국어 | [中文](README.zh.md) | [日本語](README.ja.md) | [Español](README.es.md)
 
 # skillers-suda
+
+<p align="center">
+  <img src="assets/skillers-suda-hero-01.png" alt="skillers-suda" width="320">
+</p>
 
 > **4명의 전문가가 수다 떨고 토론하면서 모호한 아이디어를 동작하는 Claude Code 스킬로 바꿔줍니다.**
 
