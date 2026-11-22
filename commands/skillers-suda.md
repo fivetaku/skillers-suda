@@ -132,4 +132,4 @@ C. [유지] 지금 이대로 괜찮아
 1. Read `${CLAUDE_PLUGIN_ROOT}/skills/skillers-suda/SKILL.md`
 2. Read `${CLAUDE_PLUGIN_ROOT}/skills/skillers-suda/references/interview-guide.md`
 3. SKILL.md의 워크플로우를 따라 실행: `$ARGUMENTS`
-4. 모든 질문은 반드시 AskUserQuestion 도구를 호출한다 — 텍스트로 출력하면 안 된다
+4. 핵심 결정(방향, 컴포넌트 타입, 워크플로우 확인, eval 결과 처리)은 AskUserQuestion으로 묻는다. 단순 확인이나 짧은 추가 질문은 자연 대화로 해도 된다

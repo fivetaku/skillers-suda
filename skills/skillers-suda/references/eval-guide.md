@@ -46,9 +46,10 @@ deepeval의 G-Eval 패턴을 참고하여 skillers-suda 워크플로우에 맞�
 | frontmatter_exists | YAML frontmatter 존재 | PASS/FAIL |
 | name_field | name 필드 존재 | PASS/FAIL |
 | description_field | description 필드 존재 | PASS/FAIL |
-| third_person | "This skill should be used when..." 형식 | PASS/FAIL |
-| trigger_phrases | 3-5개 quoted 트리거 포함 | PASS/WARN/FAIL |
-| word_count | 1,500-2,000: PASS / 미달 또는 2,001-3,000: WARN / 3,000 초과: FAIL | PASS/WARN/FAIL |
+| description_length | 1,024자 이하 | PASS/FAIL |
+| description_what_when | 무엇을 하는지 + 언제 쓰는지 (3인칭 형식 자유) | PASS/WARN |
+| trigger_phrases | 따옴표 트리거 개수 보고 (선택, run_loop 측정 결과가 우선) | PASS |
+| word_count | 짧을수록 좋다. 500줄·5,000단어 이하: PASS / 초과: WARN / 1,000줄·10,000단어 초과: FAIL | PASS/WARN/FAIL |
 | imperative_form | second-person 미사용 | PASS/FAIL |
 | references_exist | 참조된 파일이 실제 존재 | PASS/FAIL |
 | progressive_disclosure | References 섹션 존재 | PASS/WARN |
@@ -73,12 +74,12 @@ FAIL 항목에 대한 자동 수정:
 
 | FAIL 항목 | 자동 수정 |
 |-----------|-----------|
-| third_person | description을 "This skill should be used when..." 형식으로 변환 |
-| trigger_phrases | 워크플로우에서 트리거 키워드 추출하여 추가 |
+| description_length | 1,024자 이하로 줄인다 |
+| description_what_when (WARN) | 빠진 요소(무엇을 / 언제)를 한 문장 추가 |
 | imperative_form | second-person 표현을 imperative로 변환 |
 | references_exist | 누락 파일 생성 또는 참조 제거 |
 
-word_count FAIL은 자동 수정하지 않음 — 내용 판단이 필요하므로 사용자에게 안내.
+word_count WARN/FAIL은 자동 수정하지 않음 — 내용 판단이 필요하므로 사용자에게 안내.
 
 ## 4. 수동 검증
 

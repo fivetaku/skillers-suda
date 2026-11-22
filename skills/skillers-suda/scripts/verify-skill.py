@@ -38,43 +38,10 @@ def main():
         else:
             add_check(results, "name_field", "FAIL", "name field missing in frontmatter")
 
-        desc_match = re.search(r"^description:\s*(.+)", fm, re.MULTILINE)
-        if desc_match:
-            desc = desc_match.group(1).strip()
+        desc = extract_description(fm)
+        if desc:
             add_check(results, "description_field", "PASS", "description field exists")
-
-            if "This skill should be used when" in desc:
-                add_check(results, "third_person", "PASS", "Uses third-person format")
-            else:
-                add_check(
-                    results,
-                    "third_person",
-                    "FAIL",
-                    'Description should use "This skill should be used when..."',
-                )
-
-            triggers = re.findall(r'"([^"]+)"', desc)
-            if len(triggers) >= 3:
-                add_check(
-                    results,
-                    "trigger_phrases",
-                    "PASS",
-                    f"{len(triggers)} trigger phrases found",
-                )
-            elif len(triggers) >= 1:
-                add_check(
-                    results,
-                    "trigger_phrases",
-                    "WARN",
-                    f"Only {len(triggers)} trigger phrases (recommend 3-5)",
-                )
-            else:
-                add_check(
-                    results,
-                    "trigger_phrases",
-                    "FAIL",
-                    "No trigger phrases in quotes found",
-                )
+            check_description(results, desc)
         else:
             add_check(
                 results, "description_field", "FAIL", "description field missing"
@@ -82,27 +49,34 @@ def main():
     else:
         add_check(results, "frontmatter_exists", "FAIL", "No YAML frontmatter found")
 
-    # 2. Word count
+    # 2. Length — upper bounds only (progressive disclosure: shorter is better)
     body = re.sub(r"^---\n.*?\n---\n?", "", content, count=1, flags=re.DOTALL)
     words = len(body.split())
+    lines = len(content.splitlines())
+    size = f"{words} words, {lines} lines"
 
-    if 1500 <= words <= 2000:
+    if words > HARD_MAX_WORDS or lines > HARD_MAX_LINES:
         add_check(
-            results, "word_count", "PASS", f"{words} words (target: 1,500-2,000)"
+            results,
+            "word_count",
+            "FAIL",
+            f"{size} — far above the limit (hard max {HARD_MAX_WORDS:,} words / "
+            f"{HARD_MAX_LINES} lines). Move detail into references/",
         )
-    elif words <= 3000:
+    elif words > MAX_WORDS or lines > MAX_LINES:
         add_check(
             results,
             "word_count",
             "WARN",
-            f"{words} words (target: 1,500-2,000, max: 3,000)",
+            f"{size} — above {MAX_LINES} lines / {MAX_WORDS:,} words. "
+            "Shorter is better; move detail into references/",
         )
     else:
         add_check(
             results,
             "word_count",
-            "FAIL",
-            f"{words} words exceeds 3,000 word maximum",
+            "PASS",
+            f"{size} (limit: {MAX_LINES} lines / {MAX_WORDS:,} words; shorter is better)",
         )
 
     # 3. Imperative form (no second person)
@@ -214,6 +188,116 @@ def main():
 
     print(json.dumps(results, indent=2, ensure_ascii=False))
     sys.exit(0 if summary == "PASS" else 1)
+
+
+# Body size limits. No lower bound: a short skill that does its job is the goal.
+MAX_LINES = 500
+MAX_WORDS = 5000
+HARD_MAX_LINES = 1000
+HARD_MAX_WORDS = 10000
+
+# Claude Code truncates/rejects descriptions above this length.
+MAX_DESCRIPTION_CHARS = 1024
+
+# "When to use" markers (English third-person forms and Korean equivalents).
+WHEN_PATTERNS = [
+    r"\bused? when\b",
+    r"\buse (this|it)\b",
+    r"\bwhen the user\b",
+    r"\bwhenever\b",
+    r"\bfor requests?\b",
+    r"\btrigger",
+    r"때",
+    r"경우",
+    r"요청",
+    r"트리거",
+]
+
+# Boilerplate that says "when" but nothing about "what".
+BOILERPLATE = re.compile(
+    r"this skill should be used when the user asks (to|about|for)?", re.IGNORECASE
+)
+
+
+def extract_description(fm):
+    """Return the description value, supporting single-line and block scalars."""
+    lines = fm.split("\n")
+    for i, line in enumerate(lines):
+        m = re.match(r"^description:\s*(.*)$", line)
+        if not m:
+            continue
+        value = m.group(1).strip()
+        if value in ("", ">", "|", ">-", "|-", ">+", "|+"):
+            parts = []
+            for nxt in lines[i + 1 :]:
+                if nxt.strip() == "" or nxt.startswith((" ", "\t")):
+                    parts.append(nxt.strip())
+                else:
+                    break
+            value = " ".join(p for p in parts if p)
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        return value.strip()
+    return ""
+
+
+def check_description(results, desc):
+    """Check the two elements a description needs: what it does + when to use it.
+
+    Quoted trigger phrases are optional; the measured run_loop optimization
+    result takes precedence over any wording rule here.
+    """
+    if len(desc) > MAX_DESCRIPTION_CHARS:
+        add_check(
+            results,
+            "description_length",
+            "FAIL",
+            f"{len(desc)} chars exceeds {MAX_DESCRIPTION_CHARS}",
+        )
+    else:
+        add_check(
+            results,
+            "description_length",
+            "PASS",
+            f"{len(desc)} chars (max {MAX_DESCRIPTION_CHARS})",
+        )
+
+    has_when = any(re.search(p, desc, re.IGNORECASE) for p in WHEN_PATTERNS)
+
+    # "What": prose left after removing quoted triggers and the when-boilerplate.
+    prose = re.sub(r'"[^"]*"|“[^”]*”', " ", desc)
+    prose = BOILERPLATE.sub(" ", prose)
+    prose_words = [w for w in re.split(r"[\s,.;:()—\-]+", prose) if w]
+    has_what = len(prose_words) >= 4
+
+    if has_what and has_when:
+        add_check(
+            results,
+            "description_what_when",
+            "PASS",
+            "Description states what the skill does and when to use it",
+        )
+    else:
+        missing = []
+        if not has_what:
+            missing.append("what it does (a sentence beyond the trigger list)")
+        if not has_when:
+            missing.append("when to use it (e.g. 'Use when ...')")
+        add_check(
+            results,
+            "description_what_when",
+            "WARN",
+            "Description should state " + " and ".join(missing),
+        )
+
+    triggers = re.findall(r'"([^"]+)"', desc)
+    add_check(
+        results,
+        "trigger_phrases",
+        "PASS",
+        f"{len(triggers)} quoted trigger phrases (optional; "
+        "run_loop optimization result wins)",
+    )
 
 
 def add_check(results, name, status, message):

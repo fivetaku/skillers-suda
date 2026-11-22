@@ -16,7 +16,7 @@ def main():
         print(json.dumps({"error": f"File not found: {agent_path}"}))
         sys.exit(1)
 
-    with open(agent_path, "r") as f:
+    with open(agent_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     results = {
@@ -79,8 +79,10 @@ def main():
                 inline_val = tools_match.group(1).strip()
                 if inline_val.startswith("["):
                     add_check(results, "tools_field", "PASS", "tools field exists as array (inline style)")
+                elif re.fullmatch(r"[A-Za-z_*][\w*().:-]*(\s*,\s*[A-Za-z_*][\w*().:-]*)*", inline_val):
+                    add_check(results, "tools_field", "PASS", "tools field exists as comma-separated list")
                 else:
-                    add_check(results, "tools_field", "WARN", f"tools field exists but may not be array: '{inline_val}'")
+                    add_check(results, "tools_field", "WARN", f"tools field format not recognized: '{inline_val}'")
         # tools is optional — no check if absent
 
     else:
@@ -94,57 +96,48 @@ def main():
     # Strip frontmatter for body checks
     body = re.sub(r"^---\n.*?\n---\n?", "", content, count=1, flags=re.DOTALL)
 
-    # 6. role_section (FAIL) — "## 역할" or "## Role" or "## 정체성" or Identity or Core Mission
-    if re.search(r"^##\s+(역할|Role|정체성|Identity|Your Identity|Core Mission)", body, re.MULTILINE):
-        add_check(results, "role_section", "PASS", "Role/Identity section found")
-    else:
-        add_check(results, "role_section", "FAIL", "No role section found (expected: '## 역할', '## 정체성', '## Role', or '## Identity')")
+    # 6-11. Brief sections: goal, inputs, write scope, stop condition, return format.
+    # Persona sections (identity, personality, communication) are optional and not checked.
+    brief_sections = [
+        ("goal_section", "FAIL", r"(목표|Goal|역할|Role|Core Mission)", "'## 목표' / '## Goal'"),
+        ("inputs_section", "WARN", r"(입력|Inputs?)", "'## 입력' / '## Inputs'"),
+        ("write_scope_section", "WARN", r"(쓰기 범위|Write Scope|Scope|R&R)", "'## 쓰기 범위' / '## Write scope'"),
+        ("stop_condition_section", "WARN", r"(종료 조건|Stop Condition|Done When|성공 기준|Success Metrics)", "'## 종료 조건' / '## Stop condition'"),
+        ("return_format_section", "WARN", r"(반환 형식|Return Format|Output Format|결과물 형식)", "'## 반환 형식' / '## Return format'"),
+    ]
+    for name, fail_status, pattern, expected in brief_sections:
+        if re.search(r"^##\s+" + pattern, body, re.MULTILINE | re.IGNORECASE):
+            add_check(results, name, "PASS", f"{expected} section found")
+        else:
+            add_check(results, name, fail_status, f"Missing {expected} section")
 
-    # 7. rnr_section (WARN) — "## R&R" or "### 해야 할 것"
-    if re.search(r"^##\s+R&R\s*$", body, re.MULTILINE) or re.search(r"^###\s+해야 할 것\s*$", body, re.MULTILINE):
-        add_check(results, "rnr_section", "PASS", "R&R section found")
-    else:
-        add_check(results, "rnr_section", "WARN", "No '## R&R' or '### 해야 할 것' section found")
-
-    # 8. word_count (WARN) — body 500-1500 words
+    # Length: upper bound only — shorter briefs are fine.
     words = len(body.split())
-    if 500 <= words <= 1500:
-        add_check(results, "word_count", "PASS", f"{words} words (target: 500-1,500)")
-    elif words < 500:
-        add_check(results, "word_count", "WARN", f"{words} words — too short (target: 500-1,500)")
+    if words <= 1500:
+        add_check(results, "word_count", "PASS", f"{words} words (limit: 1,500; shorter is better)")
     else:
-        add_check(results, "word_count", "WARN", f"{words} words — too long (target: 500-1,500)")
+        add_check(results, "word_count", "WARN", f"{words} words — above 1,500; move detail into references")
 
-    # 9. identity_section (WARN) — "## 정체성" or "## Identity" or "Your Identity"
-    if re.search(r"^##\s+(정체성|Identity|Your Identity)", body, re.MULTILINE):
-        add_check(results, "identity_section", "PASS", "Identity section found")
-    else:
-        add_check(results, "identity_section", "WARN", "No Identity section found — L2+ agents should have '## 정체성' with Role/Personality/Experience")
+    # Frontmatter fields Claude Code does not read.
+    if fm_match:
+        unsupported = [f for f in ("vibe", "source", "recommended-for", "team-compatible")
+                       if re.search(rf"^{re.escape(f)}:", fm_match.group(1), re.MULTILINE)]
+        if unsupported:
+            add_check(results, "unsupported_frontmatter", "WARN",
+                      f"Fields not read by Claude Code: {', '.join(unsupported)}")
+        else:
+            add_check(results, "unsupported_frontmatter", "PASS", "No unsupported frontmatter fields")
 
-    # 10. success_metrics (WARN) — "## 성공 기준" or "## Success Metrics" or "성공입니다"
-    if re.search(r"^##\s+(성공 기준|Success Metrics)", body, re.MULTILINE) or "성공입니다" in body or "successful when" in body.lower():
-        add_check(results, "success_metrics", "PASS", "Success Metrics section found")
-    else:
-        add_check(results, "success_metrics", "WARN", "No Success Metrics found — agents should define measurable completion criteria")
-
-    # 11. critical_rules (WARN) — "## 핵심 원칙" or "## Critical Rules" or "-First" pattern
-    if re.search(r"^##\s+(핵심 원칙|Critical Rules)", body, re.MULTILINE) or re.search(r"-First\s", body):
-        add_check(results, "critical_rules", "PASS", "Critical Rules section found")
-    else:
-        add_check(results, "critical_rules", "WARN", "No Critical Rules found — consider adding '[Value]-First' principles")
-
-    # 12. description_pushy (WARN) — description should have trigger keywords (comma/dash separated, 30+ chars)
+    # 12. description_what_when (WARN) — what it does + when to delegate
     if fm_match:
         desc_match2 = re.search(r"^description:\s*(.+)", fm_match.group(1), re.MULTILINE)
         if desc_match2:
             desc_val = desc_match2.group(1).strip()
-            has_triggers = "," in desc_val or "—" in desc_val or "-" in desc_val
-            if has_triggers and len(desc_val) >= 30:
-                add_check(results, "description_pushy", "PASS", f"Description has trigger keywords ({len(desc_val)} chars)")
-            elif len(desc_val) < 30:
-                add_check(results, "description_pushy", "WARN", f"Description may lack trigger keywords ({len(desc_val)} chars) — use Pushy strategy: include comma-separated trigger situations")
+            has_when = re.search(r"\buse(d)? when\b|\bwhen\b|\bwhenever\b|때|경우|요청", desc_val, re.IGNORECASE)
+            if has_when and len(desc_val) >= 30:
+                add_check(results, "description_what_when", "PASS", f"Description states what + when ({len(desc_val)} chars)")
             else:
-                add_check(results, "description_pushy", "WARN", "Description exists but may lack diverse trigger keywords — add comma-separated situations")
+                add_check(results, "description_what_when", "WARN", "Description should state what the agent does and when to hand work to it (e.g. 'Use when ...')")
 
     # 13. filename_match (WARN) — filename (no ext) matches name field
     filename_no_ext = os.path.splitext(os.path.basename(agent_path))[0]

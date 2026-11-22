@@ -30,26 +30,28 @@ Claude should extract fields...
 ```yaml
 ---
 name: skill-name
-description: This skill should be used when the user asks to "trigger1", "trigger2", "trigger3".
+description: {무엇을 하는지 한 문장}. Use when {언제 쓰는지}.
 ---
 ```
 
 ### 규칙
-- **Third-person** 필수: "This skill should be used when..."
-- **구체적 trigger phrase** 3-5개 포함 — 사용자가 실제로 말할 문장
-- 한국어 트리거와 영어 트리거 모두 포함
-- "무엇을 하는지"와 "언제 사용하는지" 모두 포함
+- **두 요소를 담는다**: 무엇을 하는지 + 언제 쓰는지
+- 3인칭이면 형식은 자유: "Use when …", "This skill should be used when …", "~할 때 사용한다" 모두 된다
+- 1,024자 이하
+- 따옴표 트리거 목록은 선택이다. 키워드만 나열하면 "무엇을 하는지"가 빠진다
+- 한국어 사용자가 대상이면 한국어·영어 표현을 함께 넣는다
+- 최종 문구는 Phase H `run_loop.py`가 측정해 고른 결과가 이 규칙보다 우선한다
 
 ### 좋은 예시
 ```yaml
-description: This skill should be used when the user asks to "번역해줘", "translate this document", "문서 번역", "영어로 바꿔줘". Translates documents with glossary support and quality review.
+description: Translates documents with glossary support and a quality review pass. Use when the user wants a document translated (번역해줘, 영어로 바꿔줘) and terminology must stay consistent.
 ```
 
 ### 나쁜 예시
 ```yaml
-description: Use this skill when translating.  # Wrong person, vague
-description: Provides translation guidance.     # No trigger phrases
-description: 번역 스킬입니다.                    # Not third person, no triggers
+description: Provides translation guidance.                          # what만 있고 when 없음
+description: This skill should be used when the user asks to "번역", "translate", "번역해줘".  # 키워드 나열, what 없음
+description: 번역 스킬입니다.                                          # 둘 다 모호
 ```
 
 ## 3. Concise 원칙
@@ -65,7 +67,7 @@ Claude가 이미 아는 정보는 반복하지 않는다. 비자명한(non-obvio
 
 | 파일 | 목표 | 최대 |
 |------|------|------|
-| SKILL.md 본문 | 1,500-2,000 단어 | 3,000 단어 (500줄) |
+| SKILL.md 본문 | 짧을수록 좋다 | 500줄 이하 (약 5,000 단어) |
 | references/ 개별 파일 | 2,000-5,000 단어 | 제한 없음 |
 | description | 1-2문장 | 100 단어 |
 
@@ -117,13 +119,13 @@ references/로 옮겨야 할 것:
 - [ ] 참조된 파일이 실제로 존재
 
 **Description 품질:**
-- [ ] Third-person ("This skill should be used when...")
-- [ ] 구체적 trigger phrase 3-5개 포함
-- [ ] 한국어 + 영어 트리거 모두 포함
+- [ ] 무엇을 하는지 + 언제 쓰는지 두 요소 포함
+- [ ] 1,024자 이하
+- [ ] (한국어 사용자 대상이면) 한국어 + 영어 표현
 
 **Content 품질:**
 - [ ] Imperative form 사용 (second person 없음)
-- [ ] 본문 1,500-2,000 단어 이내
+- [ ] 본문은 짧을수록 좋다, 500줄 이하
 - [ ] 상세 내용은 references/로 분리
 - [ ] references/scripts/assets 참조 명시
 
@@ -133,84 +135,25 @@ references/로 옮겨야 할 것:
 - [ ] 유틸리티는 scripts/
 - [ ] 출력용 파일은 assets/
 
-**규율형(Discipline) 스킬일 때만 (§6 참조):**
-- [ ] Iron Law 1줄 (스킬 상단)
-- [ ] 합리화 차단표 (Excuse → Reality)
-- [ ] Red Flags 자기점검 리스트
-- [ ] Spirit vs Letter 한 줄
+**건너뛰기 쉬운 규칙을 담는 스킬 (§6 참조):**
+- [ ] 규칙마다 건너뛰면 무엇이 조용히 깨지는지 이유를 적었다
+- [ ] 대문자 명령(ALWAYS/NEVER/NO … WITHOUT …)으로 대신하지 않았다
 
-## 6. 규율형(Discipline) 스킬의 합리화 차단 장치
+## 6. 건너뛰기 쉬운 규칙 — 명령 대신 이유
 
-> 출처: obra/superpowers `writing-skills` — "Bulletproofing Skills Against Rationalization".
-> LLM은 압박을 받으면 규칙의 루프홀을 찾는다. 규칙을 **말하는 것**과 **지켜지게 만드는 것**은 다르다.
+"테스트 먼저", "완료 전 검증"처럼 AI가 압박받으면 건너뛰고 싶어지는 규칙을 담는 스킬도 기본 원칙은 같다: **ALWAYS/NEVER 대신 이유를 설명한다.** LLM은 이유를 이해하면 더 잘 따르고, 규칙이 맞지 않는 상황에서도 의도에 맞게 판단한다. 대문자 한 줄 규칙이나 변명 반박표는 규칙의 이유를 가리고, 맞지 않는 상황에서도 기계적으로 적용되게 만든다.
 
-### 6-1. 먼저 판별 — 이 스킬은 규율형인가?
+작성법:
+1. 규칙을 한 문장으로 쓴다. 대문자·절대어("반드시", "절대") 대신 평서문으로.
+2. 바로 뒤에 **건너뛰면 무엇이 깨지는지**를 쓴다. 특히 *조용히* 깨지는 경우(나중에야 발견되는 경우)를 구체적으로.
+3. 규칙이 적용되지 않는 예외가 있으면 함께 적는다. 예외가 없다고 우기기보다 경계를 밝히는 편이 잘 지켜진다.
+4. 지켜졌는지 확인할 수 있는 흔적(로그, 테스트 출력, 파일)을 요구한다. 말보다 증거가 규칙을 지키게 한다.
 
-스킬은 두 부류로 나뉜다:
-
-| 부류 | 정의 | 예시 | 차단 장치 |
-|------|------|------|----------|
-| **규율형(Discipline)** | AI가 압박받으면 건너뛰고 싶어하는 규칙을 강제 | "테스트 먼저", "근본원인 먼저", "완료 전 검증", "직접 코딩 금지" | **필수 (아래 4종)** |
-| **기법형(Technique/Pattern)** | 방법·패턴·워크플로우를 안내 | 번역, 회의록 정리, 데이터 포맷팅 | 불필요 (넣지 마라 — 토큰 낭비) |
-
-**판별 기준 (하나라도 Yes → 규율형):**
-- "X 하기 전에 반드시 Y"를 강제하는가?
-- AI가 시간 압박·단순함을 핑계로 건너뛸 유인이 있는가?
-- 건너뛰면 **조용히** 실패(나중에 발견)하는가?
-
-기법형이면 6-2~6-5를 **생략**한다. 규율형에만 적용한다.
-
-### 6-2. Iron Law (절대 규칙 한 줄)
-
-규율의 핵심을 한 줄 대문자 규칙으로. SKILL.md **상단**(소개 직후)에 배치.
-
-```
-**Iron Law: NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE.**
-```
-
-형식: `NO {행동} WITHOUT {선행조건} FIRST`. 한국어 병기 가능 — 단 규칙은 한 줄, 모호어("적절히", "가능하면") 금지.
-
-### 6-3. 합리화 차단표 (Excuse → Reality)
-
-AI가 규칙을 건너뛸 때 만들 변명을 **미리** 표로 반박한다. 규칙만 적지 말고 *특정 우회로*를 명시해 봉쇄.
-
+예:
 ```markdown
-## 합리화 차단표
-| 이런 변명이 떠오르면 | 현실 |
-|---------------------|------|
-| "이건 너무 간단해서 안 거쳐도 됨" | 간단한 게 사고 난다. 절차는 30초면 끝난다 |
-| "급하니까 그냥 넘어가자" | 절차가 추측-수정 반복보다 빠르다 |
-| "나중에 한꺼번에 검증하지" | '나중'은 안 온다. 지금 안 하면 영영 안 한다 |
+완료를 보고하기 전에 방금 실행한 검증 출력(테스트 결과, exit code)을 함께 붙인다.
+이전 실행 결과나 기억으로 "통과했다"고 쓰면, 그 사이 바뀐 코드가 깨져 있어도 아무도 모른 채 넘어간다.
+문서만 고친 변경처럼 실행할 검증이 없으면 "검증 대상 없음"이라고 적는다.
 ```
 
-작성법: "이 규칙을 건너뛴다면 나는 뭐라고 변명할까?"를 3-5개 상상 → 각각 한 줄로 반박.
-
-### 6-4. Red Flags 자기점검 리스트
-
-규칙 위반 **직전의 생각 신호**를 나열한다. AI가 합리화 중인 자신을 잡아내게 한다.
-
-```markdown
-## Red Flags — STOP
-이 생각이 들면 멈추고 규칙으로 복귀하라:
-- "그냥 이번 한 번만..."
-- "확인 안 해도 될 것 같은데"
-- "거의 다 됐으니 됐다고 하자"
-→ 전부 같은 의미다: 규칙을 건너뛰는 중. 멈춰라.
-```
-
-### 6-5. Spirit vs Letter (루프홀 봉쇄)
-
-규칙 끝에 한 줄 고정 문구. 문자만 지키고 의도를 무력화하는 우회를 차단.
-
-```
-**규칙의 문구(letter)를 어기는 것은 규칙의 의도(spirit)를 어기는 것이다.**
-```
-
-### 작성 절차 (규율형 스킬 생성 시)
-
-1. 이 스킬이 강제하는 핵심 규칙 1개 → **Iron Law** (6-2)
-2. 그 규칙을 건너뛸 변명 3-5개 상상 → **합리화 차단표** (6-3)
-3. 위반 직전 신호 3-5개 → **Red Flags** (6-4)
-4. **Spirit vs Letter** 한 줄 추가 (6-5)
-
-> 주의: 이 4종은 *규율형 스킬에만*. 기법형(번역·포맷팅 등)에 넣으면 불필요한 압박 + 토큰 낭비다. 6-1 판별을 먼저 통과한 경우만 적용한다.
+기법형 스킬(번역·포맷팅 등)에는 이런 장치 자체가 필요 없다 — 워크플로우만 쓴다.
