@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 1.5.0 — 2026-11-22
+- Upper-bound-only length check
+- What+when description check
+- Brief-style agent template
+
 ## 1.4.7 — 2026-10-14
 - **gptaku-core routing tuned.** Adjusted keywords and exclusions in `routing.json` against false matches found in real conversations. Takes effect together with gptaku-core 0.1.1.
 
