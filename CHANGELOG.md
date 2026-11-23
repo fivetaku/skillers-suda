@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.6.0 — 2026-11-23
+- **Codex에서도 같은 스킬로 동작.** 인터랙티브 메뉴·분석 모드 절차를 SKILL.md로 옮기고 명령은 얇게 정리. Codex용 `references/codex.md`(질문 도구 4단계, 서브에이전트, 만든 스킬 저장 위치) 추가.
 
 ## 1.5.0 — 2026-11-22
 - Upper-bound-only length check

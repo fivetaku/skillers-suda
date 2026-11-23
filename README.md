@@ -28,6 +28,8 @@ You describe an idea. Four personas — planner, user, expert, reviewer — spin
 /plugin install skillers-suda
 ```
 
+Codex: `codex plugin marketplace add fivetaku/gptaku_plugins` then `codex plugin add skillers-suda@gptaku-plugins`.
+
 ### 3. Restart Claude Code
 
 ### 4. Build your first skill
