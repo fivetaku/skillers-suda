@@ -122,6 +122,8 @@ description: This skill should be used when the user asks to "스킬 만들어�
 
 AskUserQuestion을 토론 결과에 맞게 구성한다. 충돌이 있으면 Q2(충돌 포인트를 선택지로), 없으면 Q3(합의 내용을 `preview`에 요약)를 출발점으로 쓴다.
 
+**여기서 멈춘다.** 방향 확인은 건너뛰지 않는다 — 아이디어가 구체적이어도 묻고, 사용자 답을 받기 전에는 Phase C·D·E(파일 생성)로 넘어가지 않는다. 질문 도구가 바로 반환되는 환경(Codex)에서는 부른 뒤 턴을 끝낸다.
+
 "다시 토론해줘" 선택 시: 사용자의 추가 정보를 받고 Step 1부터 다시 실행한다.
 
 ---
@@ -193,7 +195,7 @@ AskUserQuestion을 토론 결과에 맞게 구성한다. 충돌이 있으면 Q2(
 | should-trigger | 2-3개 | 스킬이 반드시 트리거되어야 하는 쿼리. 다양한 표현(격식/캐주얼)으로 커버리지 확보 |
 | should-not-trigger | 1-2개 | 키워드는 겹치지만 실제로는 다른 작업. 명백히 무관한 쿼리는 피한다 |
 
-**워크플로우 + Eval 확인:** "Phase D 워크플로우 + Eval 미리보기" 형식(`references/question-templates.md`)으로 보여준 직후 Q6으로 확인받는다.
+**워크플로우 + Eval 확인:** "Phase D 워크플로우 + Eval 미리보기" 형식(`references/question-templates.md`)으로 보여준 직후 Q6으로 확인받는다. 답을 받기 전에는 Phase E(파일 생성)를 시작하지 않는다.
 
 ---
 

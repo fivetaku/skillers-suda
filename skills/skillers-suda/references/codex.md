@@ -21,6 +21,8 @@ Q1. <한 줄 질문>
 
 4. `codex exec`처럼 사람이 답할 수 없는 실행이면 묻지 않고 추천안으로 진행하고 가정을 기록한다.
 
+**멈춤 지점:** Phase B Step 4 방향 확인(Q2/Q3)과 Phase D 워크플로우 확인(Q6)은 Codex에서도 생략하지 않는다. `request_user_input_async`는 바로 반환되지만 답이 온 것이 아니다 — 부른 뒤 턴을 끝내고, 답 없이 다음 Phase로 진행하지 않는다.
+
 Phase A 첫 질문(아이디어 발굴)은 열린 채팅 질문이다. `question-templates.md`의 `preview`는 질문 도구 호출 직전 채팅에 짧게 먼저 보여준다.
 
 ## 도구 차이
